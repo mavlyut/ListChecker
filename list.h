@@ -104,10 +104,9 @@ public:
 
   // O(n), strong
   list& operator=(list const& other) {
-    if (*this != other) {
-      list tmp(other);
-      swap(tmp, *this);
-    }
+    if (&other == this) return *this;
+    list tmp(other);
+    swap(tmp, *this);
     return *this;
   }
 
