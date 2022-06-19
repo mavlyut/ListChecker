@@ -164,12 +164,12 @@ public:
 
   // O(1)
   iterator end() noexcept {
-    return iterator(fake.prev);
+    return iterator(&fake);
   }
 
   // O(1)
   const_iterator end() const noexcept {
-    return const_iterator(fake.prev);
+    return const_iterator(const_cast<node*>(&fake));
   }
 
   // O(1)
