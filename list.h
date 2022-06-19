@@ -141,12 +141,12 @@ public:
 
   // O(1)
   T& back() noexcept {
-    return *std::prev(end());
+    return *(--end());
   }
 
   // O(1)
   T const& back() const noexcept {
-    return *std::prev(end());
+    return *(--end());
   }
 
   // O(1), strong
