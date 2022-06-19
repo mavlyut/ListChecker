@@ -196,9 +196,14 @@ public:
         return iterator(res);
     }
 
-    iterator erase(const_iterator a, const_iterator b) {
-        return nullptr;
-    }
+  // O(1)
+  iterator erase(const_iterator pos) noexcept {
+    pos.ptr->next->prev = pos.ptr->prev;
+    pos.ptr->prev->next = pos.ptr->next;
+    node* ans = pos.ptr->next;
+    delete(pos.ptr);
+    return iterator(ans);
+  }
 
     T &back() {
         return static_cast<node_val *>(fake.prev)->value;
