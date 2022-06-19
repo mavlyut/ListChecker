@@ -167,7 +167,7 @@ public:
 
   // O(1)
   const_iterator begin() const noexcept {
-    return const_iterator(const_cast<node*>(fake.next));
+    return const_iterator(fake.next);
   }
 
   // O(1)
@@ -177,7 +177,7 @@ public:
 
   // O(1)
   const_iterator end() const noexcept {
-    return const_iterator(const_cast<node*>(&fake));
+    return const_iterator(const_cast<basenode*>(&fake));
   }
 
   // O(1)
