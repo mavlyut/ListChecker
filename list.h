@@ -26,6 +26,8 @@ private:
 
   template<typename R>
   struct my_iterator : std::iterator<std::bidirectional_iterator_tag, const R> {
+    friend struct list;
+
     my_iterator() = delete;
 
     template <typename Q>
@@ -54,7 +56,7 @@ private:
       return x;
     }
 
-    // todo const? 
+    // todo const?
     R& operator*() {
       return static_cast<node*>(ptr)->val;
     }
@@ -196,7 +198,7 @@ public:
 
   // O(1), strong
   iterator insert(const_iterator pos, T const& val) {
-    
+
   }
 
   // O(1)
@@ -216,7 +218,7 @@ public:
   // O(1)
   void splice(const_iterator pos, list& other, const_iterator first,
               const_iterator last) noexcept {
-    
+
   }
 
   friend void swap(list& a, list& b) noexcept {
