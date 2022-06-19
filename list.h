@@ -66,7 +66,7 @@ private:
       return static_cast<node*>(ptr)->val;
     }
 
-    R* operator->() const {
+    const R* operator->() const {
       return &static_cast<node*>(ptr)->val;
     }
 
