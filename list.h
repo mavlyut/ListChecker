@@ -25,7 +25,7 @@ private:
   };
 
   template<typename R>
-  struct my_iterator {
+  struct my_iterator : std::iterator<std::bidirectional_iterator_tag, R> {
     using difference_type = ptrdiff_t;
     using reference = R const&;
     using pointer = R const*;
@@ -39,7 +39,7 @@ private:
     my_iterator(std::nullptr_t) = delete;
 
     template <typename Q>
-    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
+    my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
       : ptr(other.ptr) {}
 
     my_iterator& operator=(my_iterator const&) = default;
@@ -75,19 +75,19 @@ private:
     const R* operator->() const {
       return &static_cast<node*>(ptr)->val;
     }
-
-    bool operator==(my_iterator const& a) const {
-      return a.ptr == ptr;
+    
+    friend bool operator==(my_iterator const& a, my_iterator const& b) {
+      return a.ptr == b.ptr;
     }
 
-    bool operator!=(my_iterator const& a) const {
-      return a.ptr != ptr;
+    friend bool operator!=(my_iterator const& a, my_iterator const& b) {
+      return a.ptr != b.ptr;
     }
 
   private:
     basenode* ptr;
 
-    explicit my_iterator(basenode* ptr) : ptr(ptr) {}
+    my_iterator(basenode* ptr) : ptr(ptr) {}
   };
 
 public:
