@@ -31,7 +31,7 @@ private:
     my_iterator() = default;
 
     template <typename Q>
-    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
+    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value, bool> = true)
       : ptr(other.ptr) {}
 
     my_iterator(void* = nullptr) = delete;
