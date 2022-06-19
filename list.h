@@ -101,7 +101,7 @@ public:
 
   // O(n), strong
   list& operator=(list const& other) {
-    swap(other, *this);
+    swap(other);
     return *this;
   }
 
@@ -117,12 +117,12 @@ public:
 
   // O(1)
   T& front() noexcept {
-    return static_cast<node*>(fake.next)->val;
+    return *begin();
   }
 
   // O(1)
   T const& front() const noexcept {
-    return static_cast<node*>(fake.next)->val;
+    return *begin();
   }
 
   // O(1), strong
@@ -137,12 +137,12 @@ public:
 
   // O(1)
   T& back() noexcept {
-    return static_cast<node*>(fake.prev)->val;
+    return *std::prev(end());
   }
 
   // O(1)
   T const& back() const noexcept {
-    return static_cast<node*>(fake.prev)->val;
+    return *std::prev(end());
   }
 
   // O(1), strong
