@@ -26,12 +26,6 @@ private:
 
   template<typename R>
   struct my_iterator : std::iterator<std::bidirectional_iterator_tag, R> {
-    using difference_type = ptrdiff_t;
-    using reference = R const&;
-    using pointer = R const*;
-    using iterator_category = std::bidirectional_iterator_tag;
-    using value_type = R;
-
     friend struct list<T>;
 
     my_iterator() = default;
@@ -68,11 +62,11 @@ private:
       return x;
     }
 
-    const R& operator*() const {
+    R& operator*() const {
       return static_cast<node*>(ptr)->val;
     }
 
-    const R* operator->() const {
+    R* operator->() const {
       return &static_cast<node*>(ptr)->val;
     }
 
@@ -127,12 +121,12 @@ public:
 
   // O(1)
   T& front() noexcept {
-    return *begin();
+    return static_cast<node*>(fake.next)->val;
   }
 
   // O(1)
   T const& front() const noexcept {
-    return *begin();
+    return static_cast<node*>(fake.next)->val;
   }
 
   // O(1), strong
