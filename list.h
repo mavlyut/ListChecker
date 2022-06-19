@@ -26,7 +26,7 @@ private:
 
   template<typename R>
   struct my_iterator : std::iterator<std::bidirectional_iterator_tag, const R> {
-    friend struct list;
+    friend struct list<T>;
 
     my_iterator() = delete;
 
@@ -37,7 +37,8 @@ private:
     ~my_iterator() = default;
 
     my_iterator& operator++() {
-      return ptr = ptr->next;
+      ptr = ptr->next;
+      return *this;
     }
 
     my_iterator operator++(int) {
@@ -47,7 +48,8 @@ private:
     }
 
     my_iterator& operator--() {
-      return ptr = ptr->prev;
+      ptr = ptr->prev;
+      return *this;
     }
 
     my_iterator operator--(int) {
