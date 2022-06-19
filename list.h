@@ -227,7 +227,7 @@ public:
 
   // O(n)
   iterator erase(const_iterator first, const_iterator last) noexcept {
-    iterator it(first);
+    iterator it = iterator(first.ptr);
     while (it != last) {
       it = erase(it);
     }
