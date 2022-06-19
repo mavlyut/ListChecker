@@ -196,6 +196,10 @@ public:
         return iterator(res);
     }
 
+    iterator erase(const_iterator a, const_iterator b) {
+        return a;
+    }
+
     T &back() {
         return static_cast<node_val *>(fake.prev)->value;
     }
