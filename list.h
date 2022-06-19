@@ -30,11 +30,9 @@ private:
 
     my_iterator() = default;
 
-//    template <typename Q>
-//    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
-//      : ptr(other.ptr) {}
-
-    explicit my_iterator(my_iterator<T> const& other) : ptr(other.ptr) {}
+    template <typename Q>
+    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
+      : ptr(other.ptr) {}
 
     my_iterator(void* = nullptr) = delete;
 
@@ -239,6 +237,7 @@ public:
   // O(1)
   void splice(const_iterator pos, list&, const_iterator first,
               const_iterator last) noexcept {
+    if (first == last) return;
     --pos;
     first.ptr->prev->next = last.ptr;
     basenode* new_last = last.ptr->prev;
