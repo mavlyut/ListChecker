@@ -66,7 +66,7 @@ private:
       return static_cast<node*>(ptr)->val;
     }
 
-    const R* operator->() const {
+    R* operator->() const {
       return &static_cast<node*>(ptr)->val;
     }
 
@@ -121,12 +121,12 @@ public:
 
   // O(1)
   T& front() noexcept {
-    return static_cast<node*>(fake.next)->val;
+    return *begin();
   }
 
   // O(1)
   T const& front() const noexcept {
-    return static_cast<node*>(fake.next)->val;
+    return *begin();
   }
 
   // O(1), strong
