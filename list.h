@@ -30,9 +30,11 @@ private:
 
     my_iterator() = default;
 
-    template <typename Q>
-    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
-    : ptr(other.ptr) {}
+//    template <typename Q>
+//    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
+//      : ptr(other.ptr) {}
+
+    explicit my_iterator(my_iterator<T> const& other) : ptr(other.ptr) {}
 
     my_iterator(void* = nullptr) = delete;
 
@@ -236,15 +238,13 @@ public:
               const_iterator last) noexcept {
     first.ptr->prev->next = last.ptr;
     last.ptr->prev = first.ptr->prev;
+    last.ptr->prev->next = pos.ptr->next;
+    pos.ptr->next->prev = last.ptr->prev;
     pos.ptr->next = first.ptr;
     first.ptr->prev = pos.ptr;
-    last.ptr->prev->next = pos.ptr->next;
-    pos.ptr->prev = last.ptr->prev;
   }
 
-  friend void swap(list& a, list& b) noexcept {
-    std::swap(a.fake, b.fake);
-  }
+  friend void swap(list& a, list& b) noexcept;
 
 private:
   basenode fake;
