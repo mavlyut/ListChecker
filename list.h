@@ -11,7 +11,7 @@ private:
     basenode* prev;
     basenode* next;
 
-    basenode() : prev(*this), next(*this) {}
+    basenode() = default;
     basenode(basenode* left, basenode* right) : prev(left), next(right) {}
     virtual ~basenode() = default;
   };
@@ -25,18 +25,19 @@ private:
   };
 
   template<typename R>
-  struct my_iterator : std::iterator<std::bidirectional_iterator_tag, R> {
+  struct my_iterator {
+    
     friend struct list<T>;
 
     my_iterator() = default;
 
     template <typename Q>
-    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value, bool> = true)
+    explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
       : ptr(other.ptr) {}
 
-    my_iterator(void* = nullptr) = delete;
+    my_iterator(std::nullptr_t) = delete;
 
-    my_iterator(basenode* ptr) : ptr(ptr) {}
+    explicit my_iterator(basenode* ptr) : ptr(ptr) {}
 
     my_iterator& operator=(my_iterator const&) = default;
 
@@ -93,7 +94,7 @@ public:
   using const_reverse_iterator = std::reverse_iterator<const_iterator>;
 
   // O(1)
-  list() noexcept = default;
+  list() noexcept : fake(&fake, &fake) {}
 
   // O(n), strong
   list(list const& other) : list() {
@@ -227,8 +228,8 @@ public:
 
   // O(n)
   iterator erase(const_iterator first, const_iterator last) noexcept {
-    iterator it;
-    for (it = first; it != last; ) {
+    iterator it = first;
+    while (it != last) {
       it = erase(it);
     }
     return it;
