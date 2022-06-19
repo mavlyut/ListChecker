@@ -36,7 +36,7 @@ private:
     template <typename Q>
     explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
       : ptr(other.ptr) {}
-      
+
     my_iterator& operator=(my_iterator const&) = default;
 
     ~my_iterator() = default;
@@ -131,7 +131,7 @@ public:
 
   // O(1), strong
   void push_front(T const& x) {
-    insert(&begin(), x);
+    insert(begin(), x);
   }
 
   // O(1)
