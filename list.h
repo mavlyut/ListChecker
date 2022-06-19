@@ -197,7 +197,7 @@ public:
     }
 
     iterator erase(const_iterator a, const_iterator b) {
-        return a;
+        return nullptr;
     }
 
     T &back() {
