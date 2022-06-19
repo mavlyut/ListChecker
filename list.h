@@ -97,7 +97,7 @@ public:
 
   // O(n), strong
   list(list const& other) : list() {
-    for (iterator it = other.begin(); it != end(); it++) {
+    for (auto it = other.begin(); it != end(); it++) {
       push_back(*it);
     }
   }
