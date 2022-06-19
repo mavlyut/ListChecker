@@ -20,7 +20,7 @@ private:
     T val;
 
     node() = delete;
-    explicit node(T const& val, basenode* l = nullptr, basenode* r = nullptr) : val(val), basenode(l, r) {}
+    node(T const& val, basenode* l = nullptr, basenode* r = nullptr) : val(val), basenode(l, r) {}
     ~node() = default;
   };
 
@@ -36,13 +36,11 @@ private:
 
     my_iterator() = default;
 
+    my_iterator(std::nullptr_t) = delete;
+
     template <typename Q>
     explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
       : ptr(other.ptr) {}
-
-    my_iterator(std::nullptr_t) = delete;
-
-    explicit my_iterator(basenode* ptr) : ptr(ptr) {}
 
     my_iterator& operator=(my_iterator const&) = default;
 
@@ -88,6 +86,8 @@ private:
 
   private:
     basenode* ptr;
+
+    explicit my_iterator(basenode* ptr) : ptr(ptr) {}
   };
 
 public:
@@ -244,14 +244,13 @@ public:
   void splice(const_iterator pos, list&, const_iterator first,
               const_iterator last) noexcept {
     if (first == last) return;
-    --pos;
     first.ptr->prev->next = last.ptr;
     basenode* new_last = last.ptr->prev;
     last.ptr->prev = first.ptr->prev;
-    new_last->next = pos.ptr->next;
-    pos.ptr->next->prev = new_last;
-    pos.ptr->next = first.ptr;
-    first.ptr->prev = pos.ptr;
+    new_last->next = pos.ptr;
+    pos.ptr->prev = new_last;
+    pos.ptr = first.ptr;
+    first.ptr->prev = pos.ptr->prev;
   }
 
   friend void swap(list& a, list& b) noexcept {
@@ -260,5 +259,10 @@ public:
 
 private:
   basenode fake;
+
+  void link_to(basenode* a, basenode* b) {
+    a->next = b;
+    b->prev = a;
+  }
 };
 
