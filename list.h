@@ -20,7 +20,7 @@ private:
     T val;
 
     node() = delete;
-    explicit node(T val, node* l = nullptr, node* r = nullptr) : val(val), basenode(l, r) {}
+    explicit node(T const& val, node* l = nullptr, node* r = nullptr) : val(val), basenode(l, r) {}
     ~node() = default;
   };
 
@@ -29,6 +29,9 @@ private:
     friend struct list<T>;
 
     my_iterator() = default;
+
+    template <typename Q>
+    my_iterator(my_iterator<Q> = nullptr) = delete;
 
     template <typename Q>
     my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
@@ -124,7 +127,7 @@ public:
 
   // O(1), strong
   void push_front(T const& x) {
-    insert(begin(), x);
+    insert(&begin(), x);
   }
 
   // O(1)
