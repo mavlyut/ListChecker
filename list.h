@@ -31,11 +31,10 @@ private:
     my_iterator() = default;
 
     template <typename Q>
-    my_iterator(my_iterator<Q> = nullptr) = delete;
-
-    template <typename Q>
     explicit my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
-      : ptr(other.ptr) {}
+    : ptr(other.ptr) {}
+
+    my_iterator(void* = nullptr) = delete;
 
     my_iterator& operator=(my_iterator const&) = default;
 
@@ -201,7 +200,9 @@ public:
 
   // O(n)
   void clear() noexcept {
-    erase(begin(), end());
+    while (!empty()) {
+      pop_front();
+    }
   }
 
   // O(1), strong
@@ -231,9 +232,14 @@ public:
   }
 
   // O(1)
-  void splice(const_iterator pos, list& other, const_iterator first,
+  void splice(const_iterator pos, list&, const_iterator first,
               const_iterator last) noexcept {
-
+    first.ptr->prev->next = last.ptr;
+    last.ptr->prev = first.ptr->prev;
+    pos.ptr->next = first.ptr;
+    first.ptr->prev = pos.ptr;
+    last.ptr->prev->next = pos.ptr->next;
+    pos.ptr->prev = last.ptr->prev;
   }
 
   friend void swap(list& a, list& b) noexcept {
