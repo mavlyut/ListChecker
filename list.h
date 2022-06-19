@@ -227,7 +227,7 @@ public:
 
   // O(n)
   iterator erase(const_iterator first, const_iterator last) noexcept {
-    iterator it = first;
+    iterator it(first);
     while (it != last) {
       it = erase(it);
     }
@@ -240,7 +240,7 @@ public:
     if (first == last) return;
     basenode* new_last = last.ptr->prev;
     link_to(first.ptr->prev, last.ptr);
-    link_to(pos.ptr->prev, first);
+    link_to(pos.ptr->prev, first.ptr);
     link_to(new_last, pos.ptr);
   }
 
