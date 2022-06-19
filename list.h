@@ -97,8 +97,8 @@ public:
 
   // O(n), strong
   list(list const& other) : list() {
-    for (auto it = other.begin(); it != end(); it++) {
-      push_back(*it);
+    for (T const& x : other) {
+      push_back(x);
     }
   }
 
