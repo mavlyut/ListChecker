@@ -236,17 +236,17 @@ public:
   void splice(const_iterator pos, list&, const_iterator first,
               const_iterator last) noexcept {
     if (first == last) return;
-    first.ptr->prev->next = last.ptr;
     basenode* new_last = last.ptr->prev;
-    last.ptr->prev = first.ptr->prev;
-    new_last->next = pos.ptr;
-    pos.ptr->prev = new_last;
-    pos.ptr = first.ptr;
-    first.ptr->prev = pos.ptr->prev;
+    link_to(first.ptr->prev, last.ptr);
+    link_to(pos.ptr->prev, first);
+    link_to(new_last, pos.ptr);
   }
 
   friend void swap(list& a, list& b) noexcept {
-    std::swap(a.fake, b.fake);
+    list tmp;
+    tmp.splice(tmp.begin(), tmp, a.begin(), a.end());
+    a.splice(a.begin(), a, b.begin(), b.end());
+    b.splice(b.begin(), b, tmp.begin(), tmp.end());
   }
 
 private:
