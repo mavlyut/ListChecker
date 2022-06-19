@@ -20,13 +20,18 @@ private:
     T val;
 
     node() = delete;
-    explicit node(T const& val, node* l = nullptr, node* r = nullptr) : val(val), basenode(l, r) {}
+    explicit node(T const& val, basenode* l = nullptr, basenode* r = nullptr) : val(val), basenode(l, r) {}
     ~node() = default;
   };
 
   template<typename R>
   struct my_iterator {
-    
+    using difference_type = ptrdiff_t;
+    using reference = R const&;
+    using pointer = R const*;
+    using iterator_category = std::bidirectional_iterator_tag;
+    using value_type = R;
+
     friend struct list<T>;
 
     my_iterator() = default;
@@ -249,7 +254,9 @@ public:
     first.ptr->prev = pos.ptr;
   }
 
-  friend void swap(list& a, list& b) noexcept;
+  friend void swap(list& a, list& b) noexcept {
+    std::swap(a.fake, b.fake);
+  }
 
 private:
   basenode fake;
