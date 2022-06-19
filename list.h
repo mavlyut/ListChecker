@@ -64,7 +64,7 @@ private:
     }
 
     const R* operator->() {
-      return &operator*();
+      return &static_cast<node*>(ptr)->val;
     }
 
     friend bool operator==(my_iterator const& a, my_iterator const& b) {
@@ -214,7 +214,9 @@ public:
 
   // O(n)
   iterator erase(const_iterator first, const_iterator last) noexcept {
-
+    for (iterator it = first; it != last; ) {
+      it = erase(it);
+    }
   }
 
   // O(1)
