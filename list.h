@@ -1,1 +1,229 @@
+#pragma once
+#include <cassert>
+#include <iterator>
+#include <iostream>
+
+template <typename T>
+class list {
+
+private:
+  struct basenode {
+    basenode* prev;
+    basenode* next;
+
+    basenode() : prev(*this), next(*this) {}
+    basenode(basenode* left, basenode* right) : prev(left), next(right) {}
+    virtual ~basenode() = default;
+  };
+
+  struct node : basenode {
+    T val;
+
+    node() = delete;
+    explicit node(T val, node* l = nullptr, node* r = nullptr) : val(val), basenode(l, r) {}
+    ~node() = default;
+  };
+
+  template<typename R>
+  struct my_iterator : std::iterator<std::bidirectional_iterator_tag, const R> {
+    my_iterator() = delete;
+
+    template <typename Q>
+    my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
+      : ptr(other.ptr) {}
+
+    ~my_iterator() = default;
+
+    my_iterator& operator++() {
+      return ptr = ptr->next;
+    }
+
+    my_iterator operator++(int) {
+      my_iterator x = *this;
+      ++*this;
+      return x;
+    }
+
+    my_iterator& operator--() {
+      return ptr = ptr->prev;
+    }
+
+    my_iterator operator--(int) {
+      my_iterator x = *this;
+      --*this;
+      return x;
+    }
+
+    // todo const? 
+    R& operator*() {
+      return static_cast<node*>(ptr)->val;
+    }
+
+    const R* operator->() {
+      return &operator*();
+    }
+
+    friend bool operator==(my_iterator const& a, my_iterator const& b) {
+      return a.ptr == b.ptr;
+    }
+
+    friend bool operator!=(my_iterator const& a, my_iterator const& b) {
+      return a.ptr != b.ptr;
+    }
+
+  private:
+    basenode* ptr;
+  };
+
+public:
+  // bidirectional iterator
+  using iterator = my_iterator<T>;
+  // bidirectional iterator
+  using const_iterator = my_iterator<const T>;
+  using reverse_iterator = std::reverse_iterator<iterator>;
+  using const_reverse_iterator = std::reverse_iterator<const_iterator>;
+
+  // O(1)
+  list() noexcept = default;
+
+  // O(n), strong
+  list(list const& other) : list() {
+    for (iterator it = other.begin(); it != end(); it++) {
+      push_back(*it);
+    }
+  }
+
+  // O(n), strong
+  list& operator=(list const& other) {
+    swap(other, *this);
+    return *this;
+  }
+
+  // O(n)
+  ~list() {
+    clear();
+  }
+
+  // O(1)
+  bool empty() const noexcept {
+    return fake.next == &fake;
+  }
+
+  // O(1)
+  T& front() noexcept {
+    return static_cast<node*>(fake.next)->val;
+  }
+
+  // O(1)
+  T const& front() const noexcept {
+    return static_cast<node*>(fake.next)->val;
+  }
+
+  // O(1), strong
+  void push_front(T const& x) {
+    insert(begin(), x);
+  }
+
+  // O(1)
+  void pop_front() noexcept {
+    erase(begin());
+  }
+
+  // O(1)
+  T& back() noexcept {
+    return static_cast<node*>(fake.prev)->val;
+  }
+
+  // O(1)
+  T const& back() const noexcept {
+    return static_cast<node*>(fake.prev)->val;
+  }
+
+  // O(1), strong
+  void push_back(T const& x) {
+    insert(end(), x);
+  }
+
+  // O(1)
+  void pop_back() noexcept {
+    erase(--end());
+  }
+
+  // O(1)
+  iterator begin() noexcept {
+    return iterator(fake.next);
+  }
+
+  // O(1)
+  const_iterator begin() const noexcept {
+    return const_iterator(fake.next);
+  }
+
+  // O(1)
+  iterator end() noexcept {
+    return iterator(fake.prev);
+  }
+
+  // O(1)
+  const_iterator end() const noexcept {
+    return const_iterator(fake.prev);
+  }
+
+  // O(1)
+  reverse_iterator rbegin() noexcept {
+    return reverse_iterator(end());
+  }
+
+  // O(1)
+  const_reverse_iterator rbegin() const noexcept {
+    return const_reverse_iterator(end());
+  }
+
+  // O(1)
+  reverse_iterator rend() noexcept {
+    return reverse_iterator(begin());
+  }
+
+  // O(1)
+  const_reverse_iterator rend() const noexcept {
+    return const_reverse_iterator(begin());
+  }
+
+  // O(n)
+  void clear() noexcept {
+    erase(begin(), end());
+  }
+
+  // O(1), strong
+  iterator insert(const_iterator pos, T const& val) {
+    
+  }
+
+  // O(1)
+  iterator erase(const_iterator pos) noexcept {
+    pos.ptr->next->prev = pos.ptr->prev;
+    pos.ptr->prev->next = pos.ptr->next;
+    node* ans = pos.ptr->next;
+    delete(pos.ptr);
+    return iterator(ans);
+  }
+
+  // O(n)
+  iterator erase(const_iterator first, const_iterator last) noexcept {
+
+  }
+
+  // O(1)
+  void splice(const_iterator pos, list& other, const_iterator first,
+              const_iterator last) noexcept {
+    
+  }
+
+  friend void swap(list& a, list& b) noexcept {
+    std::swap(a.fake, b.fake);
+  }
+
+private:
+  basenode fake;
+};
 
