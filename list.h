@@ -25,10 +25,10 @@ private:
   };
 
   template<typename R>
-  struct my_iterator : std::iterator<std::bidirectional_iterator_tag, const R> {
+  struct my_iterator : std::iterator<std::bidirectional_iterator_tag, R> {
     friend struct list<T>;
 
-    my_iterator() = delete;
+    my_iterator() = default;
 
     template <typename Q>
     my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
@@ -58,21 +58,20 @@ private:
       return x;
     }
 
-    // todo const?
-    R& operator*() {
+    const R& operator*() const {
       return static_cast<node*>(ptr)->val;
     }
 
-    const R* operator->() {
+    const R* operator->() const {
       return &static_cast<node*>(ptr)->val;
     }
 
-    friend bool operator==(my_iterator const& a, my_iterator const& b) {
-      return a.ptr == b.ptr;
+    bool operator==(my_iterator const& a) const {
+      return a.ptr == ptr;
     }
 
-    friend bool operator!=(my_iterator const& a, my_iterator const& b) {
-      return a.ptr != b.ptr;
+    bool operator!=(my_iterator const& a) const {
+      return a.ptr != ptr;
     }
 
   private:
@@ -200,7 +199,10 @@ public:
 
   // O(1), strong
   iterator insert(const_iterator pos, T const& val) {
-
+    node* new_node = new node(val, pos.ptr->prev, pos.ptr);
+    new_node->prev->next = new_node;
+    new_node->next->prev = new_node;
+    return new_node;
   }
 
   // O(1)
@@ -214,9 +216,11 @@ public:
 
   // O(n)
   iterator erase(const_iterator first, const_iterator last) noexcept {
-    for (iterator it = first; it != last; ) {
+    iterator it;
+    for (it = first; it != last; ) {
       it = erase(it);
     }
+    return it;
   }
 
   // O(1)
