@@ -32,8 +32,10 @@ private:
 
     my_iterator(std::nullptr_t) = delete;
 
+    my_iterator(basenode* ptr) : ptr(ptr) {}
+
     template <typename Q>
-    my_iterator(my_iterator<Q>& other, typename std::enable_if<std::is_same<R, const Q>::value>::type* = nullptr)
+    my_iterator(my_iterator<Q> const& other, typename std::enable_if<std::is_same<const Q, R>::value>::type* = nullptr)
       : ptr(other.ptr) {}
 
     my_iterator& operator=(my_iterator const&) = default;
@@ -166,7 +168,7 @@ public:
 
   // O(1)
   const_iterator begin() const noexcept {
-    return const_iterator(fake.next);
+    return const_iterator(const_cast<node*>(fake.next));
   }
 
   // O(1)
@@ -218,7 +220,7 @@ public:
   iterator erase(const_iterator pos) noexcept {
     pos.ptr->next->prev = pos.ptr->prev;
     pos.ptr->prev->next = pos.ptr->next;
-    node* ans = pos.ptr->next;
+    basenode* ans = pos.ptr->next;
     delete static_cast<node*>(pos.ptr);
     return iterator(ans);
   }
