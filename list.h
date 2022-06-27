@@ -13,15 +13,18 @@ private:
 
     basenode() = default;
     basenode(basenode* left, basenode* right) : prev(left), next(right) {}
-    virtual ~basenode() = default;
+    ~basenode() = default;
   };
 
   struct node : basenode {
     T val;
 
     node() = delete;
-    node(T const& val, basenode* l = nullptr, basenode* r = nullptr) : val(val), basenode(l, r) {}
-    ~node() = default;
+    node(T const& val, basenode* l = nullptr, basenode* r = nullptr) : basenode(l, r), val(val) {}
+    ~node() {
+      val.~T();
+      ~basenode();
+    }
   };
 
   template<typename R>
