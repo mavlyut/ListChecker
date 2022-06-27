@@ -13,7 +13,7 @@ private:
 
     basenode() = default;
     basenode(basenode* left, basenode* right) : prev(left), next(right) {}
-    ~basenode() = default;
+    virtual ~basenode() = default;
   };
 
   struct node : basenode {
