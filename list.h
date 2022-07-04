@@ -20,11 +20,8 @@ private:
     T val;
 
     node() = delete;
-    node(T const& val, basenode* l = nullptr, basenode* r = nullptr) : basenode(l, r), val(val) {}
-    ~node() {
-      val.~T();
-      ~basenode();
-    }
+    node(T const& val, basenode* l = nullptr, basenode* r = nullptr) : val(val), basenode(l, r) {}
+    ~node() = default;
   };
 
   template<typename R>
